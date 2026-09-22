@@ -1,5 +1,7 @@
 import type {
+  Product,
   ProductListQuery,
+  ProductOption,
   ProductSearchParams,
   ProductSort,
 } from "@/features/products/types/product.types";
@@ -29,6 +31,34 @@ export function formatPrice(amount: number): string {
 
 export function formatWholePrice(amount: number): string {
   return `$${amount}`;
+}
+
+export function formatProductLabel(value: string): string {
+  return value
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export function getOptionValue(
+  option: ProductOption,
+  selectedOptions: Record<string, string>,
+): string {
+  return (
+    selectedOptions[option.id] ?? option.defaultValue ?? option.values[0] ?? ""
+  );
+}
+
+export function getSelectedPrice(
+  product: Product,
+  selectedOptions: Record<string, string>,
+): number {
+  const volume = selectedOptions.volume;
+  if (volume && product.volumePrices?.[volume] != null) {
+    return product.volumePrices[volume];
+  }
+  return product.price;
 }
 
 export function parseProductListQuery(
